@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BlogWebApplication.Core/BlogWebApplication.Core.csproj" />
+  <Project Path="BlogWebApplication.Repository/BlogWebApplication.Repository.csproj" />
+  <Project Path="BlogWebApplication.Service/BlogWebApplication.Service.csproj" />
+  <Project Path="BlogWebApplication.SharedLibrary/BlogWebApplication.SharedLibrary.csproj" />
+  <Project Path="BlogWebApplication.WebUI/BlogWebApplication.WebUI.csproj" />
+</Solution>
