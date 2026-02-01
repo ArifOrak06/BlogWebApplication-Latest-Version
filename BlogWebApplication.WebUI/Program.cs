@@ -1,9 +1,14 @@
+using BlogWebApplication.Repository.Extensions.Microsoft;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddDependenciesForRepositoryLayer(builder.Configuration);
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
