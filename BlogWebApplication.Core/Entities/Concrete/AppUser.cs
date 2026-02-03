@@ -6,5 +6,7 @@ namespace BlogWebApplication.Core.Entities.Concrete
     public class AppUser : IdentityUser<Guid>,IEntity
     {
         public ICollection<Article> Articles { get; set; }
+        public Img Img { get; set; }
+        public Guid? ImgId { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+using BlogWebApplication.Core.Entities.Concrete;
+using BlogWebApplication.Repository.Contexts.EfCore;
 using BlogWebApplication.Repository.Extensions.Microsoft;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,11 @@ builder.Services.AddControllersWithViews();
 
 
 builder.Services.AddDependenciesForRepositoryLayer(builder.Configuration);
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppDbContext>();
+
+
+
+
 var app = builder.Build();
 
 

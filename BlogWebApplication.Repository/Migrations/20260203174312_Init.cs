@@ -31,9 +31,9 @@ namespace BlogWebApplication.Repository.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -51,9 +51,9 @@ namespace BlogWebApplication.Repository.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -121,14 +121,14 @@ namespace BlogWebApplication.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
                     ImgId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     AppUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -141,17 +141,20 @@ namespace BlogWebApplication.Repository.Migrations
                         name: "FK_Articles_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Articles_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Articles_Imgs_ImgId",
                         column: x => x.ImgId,
                         principalTable: "Imgs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -238,6 +241,26 @@ namespace BlogWebApplication.Repository.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CreatedBy", "CreatedDate", "DeletedBy", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedDate", "Name" },
+                values: new object[] { new Guid("241d8c83-1afd-487a-92b7-6e3fe9c2a5fe"), "Admin", new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(2722), null, true, false, "Admin", new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(2726), "Web Development" });
+
+            migrationBuilder.InsertData(
+                table: "Imgs",
+                columns: new[] { "Id", "CreatedBy", "CreatedDate", "DeletedBy", "FileName", "FileType", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedDate" },
+                values: new object[] { new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"), "Admin Test", new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(3655), null, "defaultUser.png", "image/png", true, false, null, new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(3660) });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImgId", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("89884fbc-0e86-4a4b-ba2f-8a1afe2b6b05"), 0, "40c7e439-245e-4ad0-84ff-a3f96864d7fc", "superadmin@blog.com", true, new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"), false, null, "SUPERADMIN@BLOG.COM", "SUPERADMIN@BLOG.COM", "AQAAAAIAAYagAAAAEOjQaLKrKZVSHm34Mrg/P2q1hT83HP0Loa7eEruxL/Q+D0/KflVwHSqSQBMDcWkFHg==", "1112222222", true, "ac2682dc-71cb-46b8-9618-4c308be28aaa", false, "superadmin@blog.com" });
+
+            migrationBuilder.InsertData(
+                table: "Articles",
+                columns: new[] { "Id", "AppUserId", "CategoryId", "Content", "CreatedBy", "CreatedDate", "DeletedBy", "ImgId", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedDate", "Title" },
+                values: new object[] { new Guid("dbbcbaa4-7800-4f5e-8595-e290225698d7"), new Guid("89884fbc-0e86-4a4b-ba2f-8a1afe2b6b05"), new Guid("241d8c83-1afd-487a-92b7-6e3fe9c2a5fe"), "Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için,Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için  ", "Admin", new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(1027), null, new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"), true, false, "Admin", new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(1041), "Asp.Net Core ile Web Geliştirme" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_AppUserId",

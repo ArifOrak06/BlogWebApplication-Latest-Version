@@ -119,6 +119,26 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("89884fbc-0e86-4a4b-ba2f-8a1afe2b6b05"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "40c7e439-245e-4ad0-84ff-a3f96864d7fc",
+                            Email = "superadmin@blog.com",
+                            EmailConfirmed = true,
+                            ImgId = new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"),
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SUPERADMIN@BLOG.COM",
+                            NormalizedUserName = "SUPERADMIN@BLOG.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOjQaLKrKZVSHm34Mrg/P2q1hT83HP0Loa7eEruxL/Q+D0/KflVwHSqSQBMDcWkFHg==",
+                            PhoneNumber = "1112222222",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "ac2682dc-71cb-46b8-9618-4c308be28aaa",
+                            TwoFactorEnabled = false,
+                            UserName = "superadmin@blog.com"
+                        });
                 });
 
             modelBuilder.Entity("BlogWebApplication.Core.Entities.Concrete.Article", b =>
@@ -135,17 +155,16 @@ namespace BlogWebApplication.Repository.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ImgId")
@@ -158,7 +177,6 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -166,7 +184,8 @@ namespace BlogWebApplication.Repository.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -176,7 +195,24 @@ namespace BlogWebApplication.Repository.Migrations
 
                     b.HasIndex("ImgId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("dbbcbaa4-7800-4f5e-8595-e290225698d7"),
+                            AppUserId = new Guid("89884fbc-0e86-4a4b-ba2f-8a1afe2b6b05"),
+                            CategoryId = new Guid("241d8c83-1afd-487a-92b7-6e3fe9c2a5fe"),
+                            Content = "Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için,Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için Asp.Net Core 8.0 ile Muhasebe Programı Geliştirmek için  ",
+                            CreatedBy = "Admin",
+                            CreatedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(1027),
+                            ImgId = new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ModifiedBy = "Admin",
+                            ModifiedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(1041),
+                            Title = "Asp.Net Core ile Web Geliştirme"
+                        });
                 });
 
             modelBuilder.Entity("BlogWebApplication.Core.Entities.Concrete.Category", b =>
@@ -186,14 +222,12 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -203,7 +237,6 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -216,6 +249,19 @@ namespace BlogWebApplication.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("241d8c83-1afd-487a-92b7-6e3fe9c2a5fe"),
+                            CreatedBy = "Admin",
+                            CreatedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(2722),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ModifiedBy = "Admin",
+                            ModifiedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(2726),
+                            Name = "Web Development"
+                        });
                 });
 
             modelBuilder.Entity("BlogWebApplication.Core.Entities.Concrete.Img", b =>
@@ -225,14 +271,12 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
@@ -250,7 +294,6 @@ namespace BlogWebApplication.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -259,6 +302,19 @@ namespace BlogWebApplication.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Imgs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2771ff5b-9038-486a-901e-6b95f8f5ec75"),
+                            CreatedBy = "Admin Test",
+                            CreatedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(3655),
+                            FileName = "defaultUser.png",
+                            FileType = "image/png",
+                            IsActive = true,
+                            IsDeleted = false,
+                            ModifiedDate = new DateTime(2026, 2, 3, 20, 43, 11, 878, DateTimeKind.Local).AddTicks(3660)
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -366,24 +422,29 @@ namespace BlogWebApplication.Repository.Migrations
 
             modelBuilder.Entity("BlogWebApplication.Core.Entities.Concrete.AppUser", b =>
                 {
-                    b.HasOne("BlogWebApplication.Core.Entities.Concrete.Img", null)
+                    b.HasOne("BlogWebApplication.Core.Entities.Concrete.Img", "Img")
                         .WithMany("AppUsers")
                         .HasForeignKey("ImgId");
+
+                    b.Navigation("Img");
                 });
 
             modelBuilder.Entity("BlogWebApplication.Core.Entities.Concrete.Article", b =>
                 {
                     b.HasOne("BlogWebApplication.Core.Entities.Concrete.AppUser", "AppUser")
                         .WithMany("Articles")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BlogWebApplication.Core.Entities.Concrete.Category", "Category")
                         .WithMany("Articles")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BlogWebApplication.Core.Entities.Concrete.Img", "Img")
                         .WithMany("Articles")
-                        .HasForeignKey("ImgId");
+                        .HasForeignKey("ImgId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AppUser");
 
