@@ -1,4 +1,8 @@
-﻿using BlogWebApplication.Repository.Contexts.EfCore;
+﻿using BlogWebApplication.Core.Repositories;
+using BlogWebApplication.Core.Utilities.Uow;
+using BlogWebApplication.Repository.Contexts.EfCore;
+using BlogWebApplication.Repository.Repositories;
+using BlogWebApplication.Repository.Utilities.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +21,10 @@ namespace BlogWebApplication.Repository.Extensions.Microsoft
                     opt.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext))!.GetName().Name);
                 }); 
             } );
+
+            services.AddScoped(typeof(IRepositoryBase<>),typeof(RepositoryBase<>)); 
+            services.AddScoped<IRepositoryManager,RepositoryManager>();
+            services.AddScoped<IUow,Uow>();
         }
     }
 }
