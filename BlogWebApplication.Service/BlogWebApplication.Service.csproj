@@ -10,4 +10,12 @@
     <ProjectReference Include="..\BlogWebApplication.Repository\BlogWebApplication.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ValidationRules\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
 </Project>

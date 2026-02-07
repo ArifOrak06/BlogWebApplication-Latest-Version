@@ -1,6 +1,8 @@
 using BlogWebApplication.Core.Entities.Concrete;
 using BlogWebApplication.Repository.Contexts.EfCore;
 using BlogWebApplication.Repository.Extensions.Microsoft;
+using BlogWebApplication.Service.Utilities.AutoMapper;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +12,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDependenciesForRepositoryLayer(builder.Configuration);
 builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppDbContext>();
-
-
-
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+//builder.Services.AddAutoMapper(typeof(ArticleProfile).Assembly);
 
 var app = builder.Build();
 
