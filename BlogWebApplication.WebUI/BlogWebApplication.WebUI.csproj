@@ -17,4 +17,8 @@
     <ProjectReference Include="..\BlogWebApplication.Service\BlogWebApplication.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\pictures\" />
+  </ItemGroup>
+
 </Project>
