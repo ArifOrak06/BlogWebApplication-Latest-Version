@@ -3,6 +3,7 @@ using BlogWebApplication.Core.Services;
 using BlogWebApplication.Service.Helpers;
 using BlogWebApplication.Service.Services;
 using BlogWebApplication.Service.Utilities.AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogWebApplication.Service.Extensions.Microsoft
@@ -14,6 +15,7 @@ namespace BlogWebApplication.Service.Extensions.Microsoft
             services.AddAutoMapper(typeof(ArticleProfile));
             services.AddScoped<IArticleService,ArticleService>();
             services.AddScoped<IImgHelper, ImgHelper>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }
