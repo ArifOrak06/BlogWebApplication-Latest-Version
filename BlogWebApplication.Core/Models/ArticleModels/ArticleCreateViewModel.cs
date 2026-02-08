@@ -11,7 +11,6 @@ namespace BlogWebApplication.Core.Models.ArticleModels
         public Guid CategoryId { get; set; }
         public Guid AppUserId { get; set; }
         public IFormFile? Photo { get; set; }
-        public DateTime CreatedDate { get; set; }
         public string? CreatedBy { get; set; }
     }
 }

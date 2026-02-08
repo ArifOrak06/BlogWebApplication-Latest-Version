@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace BlogWebApplication.Repository.Repositories
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : BaseEntity
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : class,IEntity,new()
     {
         protected readonly AppDbContext _appDbContext;
 
@@ -28,8 +28,10 @@ namespace BlogWebApplication.Repository.Repositories
         public async Task<List<T>> GetAllAsync(bool trackChanges, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _appDbContext.Set<T>();
+            query = !trackChanges ? query.AsNoTracking() : query;
+            query = predicate is null ? query : query.Where(predicate);
+            //query = (!trackChanges && predicate is null ? query.AsNoTracking() : query.Where(predicate));
 
-            query = (!trackChanges && predicate is null) ? query.AsNoTracking() : query.Where(predicate);
             if (includeProperties.Any())
                 foreach (var property in includeProperties)
                     query = query.Include(property);

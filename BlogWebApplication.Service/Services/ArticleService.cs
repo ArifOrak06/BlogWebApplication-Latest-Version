@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using BlogWebApplication.Core.Entities.Concrete;
 using BlogWebApplication.Core.Helpers;
 using BlogWebApplication.Core.Models.ArticleModels;
+using BlogWebApplication.Core.Models.ImgModels;
 using BlogWebApplication.Core.Repositories;
 using BlogWebApplication.Core.Services;
 using BlogWebApplication.Core.Utilities.Uow;
+using BlogWebApplication.Service.Extensions.FluentValidationEx;
+using BlogWebApplication.Service.Extensions.IdentityEx;
+using BlogWebApplication.SharedLibrary.Enums;
 using BlogWebApplication.SharedLibrary.RRP;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace BlogWebApplication.Service.Services
@@ -31,57 +37,168 @@ namespace BlogWebApplication.Service.Services
             _createViewModelValidator = createViewModelValidator;
             _updateViewModelValidator = updateViewModelValidator;
             _httpContextAccessor = httpContextAccessor;
-            _claimsPrincipal = _httpContextAccessor.HttpContext.User;   
+            _claimsPrincipal = _httpContextAccessor.HttpContext.User;
         }
 
-        public Task<CustomResponseModel<ArticleCreateViewModel>> CreateOneArticleAsync(ArticleCreateViewModel articleCreateViewModel)
+        public async Task<CustomResponseModel<ArticleCreateViewModel>> CreateOneArticleAsync(ArticleCreateViewModel articleCreateViewModel)
         {
-            throw new NotImplementedException();
+            var result = await _createViewModelValidator.ValidateAsync(articleCreateViewModel);
+            if (!result.IsValid)
+                return CustomResponseModel<ArticleCreateViewModel>.ValidationFail(ResponseType.ValidationError, result.ConvertToCustomValidationErrors());
+            Article? newArticle = _mapper.Map<Article>(articleCreateViewModel);
+            newArticle.AppUserId = _claimsPrincipal.GetLoggedInUserId();
+            newArticle.CreatedBy = _claimsPrincipal.GetLoggedInUserName();
+            newArticle.CategoryId = articleCreateViewModel.CategoryId;
+            newArticle.IsActive = true;
+            newArticle.IsDeleted = false;
+            newArticle.CreatedDate = DateTime.Now;
+            newArticle.ModifiedDate = DateTime.Now;
+            if (articleCreateViewModel.Photo is not null)
+            {
+                CustomResponseModel<ImgUploadViewModel> imgUploadResult = await _imgHelper.UploadOneImageAsync(articleCreateViewModel.Photo)!;
+                if (imgUploadResult.ResponseType == ResponseType.Success)
+                {
+                    Img? newImg = new Img()
+                    {
+
+                        CreatedDate = DateTime.Now,
+                        FileName = imgUploadResult.Data!.FullName!,
+                        IsActive = true,
+                        IsDeleted = false,
+                        ModifiedDate = DateTime.Now,
+                        CreatedBy = _claimsPrincipal.GetLoggedInUserName(),
+
+                    };
+                    await _repositoryManager.ImgRepository.CreateAsync(newImg);
+                    await _uow.CommitAsync();
+                    newArticle.ImgId = newImg.Id;
+                }
+
+            }
+            await _repositoryManager.ArticleRepository.CreateAsync(newArticle);
+            await _uow.CommitAsync();
+            return CustomResponseModel<ArticleCreateViewModel>.Success(ResponseType.Success, _mapper.Map<ArticleCreateViewModel>(newArticle), $"{articleCreateViewModel.Title} başlıklı makale başarılı bir şekilde eklenmiştir.");
+
         }
 
-        public Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync()
+        public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync()
         {
-            throw new NotImplementedException();
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();
+            if (articles is null)
+                return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, "Sistemde kayıtlı aktif makale bulunmamaktadır.");
+            return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
         }
 
-        public Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithAppUserByCategoryIdAsync(Guid categoryId)
+        public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithAppUserByCategoryIdAsync(Guid categoryId)
         {
-            throw new NotImplementedException();
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.CategoryId == categoryId&&x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();
+            if (articles is null)
+                return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, $"Kategori Id : {categoryId} olan kategoriye ait Sistemde kayıtlı aktif makale bulunmamaktadır.");
+            return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), $"Kategori Id : {categoryId} olan kategoriye ait makaleler başarıyla listelenmiştir.");
         }
 
-        public Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithCategoryByAppUserIdAsync(Guid appUserId)
+        public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithCategoryByAppUserIdAsync(Guid appUserId)
         {
-            throw new NotImplementedException();
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.AppUserId == appUserId && x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();
+            if (articles is null)
+                return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, $"Kullanıcı Id : {appUserId} olan kullanıcıya ait Sistemde kayıtlı aktif makale bulunmamaktadır.");
+            return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), $"AppUser Id : {appUserId} olan kullanıcıya ait makaleler başarıyla listelenmiştir.");
         }
 
-        public Task<CustomResponseModel<List<ArticleViewModel>>> GetAllDeletedArticlesWithCategoryAndAppUserAsync()
+        public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllDeletedArticlesWithCategoryAndAppUserAsync()
         {
-            throw new NotImplementedException();
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => !x.IsActive && x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();
+            if (articles is null)
+                return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, "Sistemde kayıtlı pasif makale bulunmamaktadır.");
+            return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), "Sistemde kayıtlı pasif makaleler başarılı bir şekilde listelenmiştir.");
         }
 
-        public Task<CustomResponseModel<ArticleViewModel>> GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(Guid articleId)
+        public async Task<CustomResponseModel<ArticleViewModel>> GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(Guid articleId)
         {
-            throw new NotImplementedException();
+            Article? article = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.Id  == articleId && x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).SingleOrDefaultAsync();
+            if (article is null)
+                return CustomResponseModel<ArticleViewModel>.Fail(ResponseType.NotFound, "Sistemde kayıtlı pasif makale bulunmamaktadır.");
+            return CustomResponseModel<ArticleViewModel>.Success(ResponseType.Success,_mapper.Map<ArticleViewModel>(article),$"Makale ID : {articleId} olan makale başarılı bir şekilde listelenmiştir.");
         }
 
-        public Task<CustomResponseModel<NoContentModel>> HardDeleteOneArticleAsync(Guid articleId)
+        public async Task<CustomResponseModel<NoContentModel>> HardDeleteOneArticleAsync(Guid articleId)
         {
-            throw new NotImplementedException();
+            Article? article = await _repositoryManager.ArticleRepository.GetByFilter(true,x => x.Id.Equals(articleId)).SingleOrDefaultAsync();
+            if (article is null)
+                return CustomResponseModel<NoContentModel>.Fail(ResponseType.NotFound, $"Makale Id : {articleId} olan makale bulunamamıştır.");
+            _repositoryManager.ArticleRepository.Delete(article);
+            await _uow.CommitAsync();   
+            return CustomResponseModel<NoContentModel>.Success(ResponseType.Success,$"Makale Id : {articleId} olan makale başarılı bir şekilde kalıcı olarak silinmiştir.");
         }
 
-        public Task<CustomResponseModel<NoContentModel>> RestoreOneArticleAsync(Guid articleId)
+        public async Task<CustomResponseModel<NoContentModel>> RestoreOneArticleAsync(Guid articleId)
         {
-            throw new NotImplementedException();
+            Article? article = await _repositoryManager.ArticleRepository.GetByFilter(true, x => x.Id.Equals(articleId)).SingleOrDefaultAsync();
+            if (article is null)
+                return CustomResponseModel<NoContentModel>.Fail(ResponseType.NotFound, $"Makale Id : {articleId} olan makale bulunamamıştır.");
+            article.IsDeleted = false;
+            article.IsActive = true;
+            article.ModifiedBy = _claimsPrincipal.GetLoggedInUserEmail();
+            article.ModifiedDate = DateTime.Now;
+            await _uow.CommitAsync();
+            return CustomResponseModel<NoContentModel>.Success(ResponseType.Success, $"Makale Id : {articleId} olan makale başarılı bir şekilde aktif hale  getirilmiştir.");
         }
 
-        public Task<CustomResponseModel<NoContentModel>> SoftDeleteOneArticleAsync(Guid articleId)
+        public async  Task<CustomResponseModel<NoContentModel>> SoftDeleteOneArticleAsync(Guid articleId)
         {
-            throw new NotImplementedException();
+            Article? article = await _repositoryManager.ArticleRepository.GetByFilter(true, x => x.Id.Equals(articleId)).SingleOrDefaultAsync();
+            if (article is null)
+                return CustomResponseModel<NoContentModel>.Fail(ResponseType.NotFound, $"Makale Id : {articleId} olan makale bulunamamıştır.");
+            article.IsActive = false;
+            article.IsDeleted = true;
+            article.ModifiedDate = DateTime.Now;
+            article.ModifiedBy = _claimsPrincipal.GetLoggedInUserEmail();
+            await _uow.CommitAsync();
+            return CustomResponseModel<NoContentModel>.Success(ResponseType.Success, $"Makale Id : {articleId} olan makale başarılı bir şekilde pasif hale getirilmiştir.");
         }
 
-        public Task<CustomResponseModel<ArticleUpdateViewModel>> UpdateOneArticleAsync(ArticleUpdateViewModel articleCreateViewModel)
+        public async Task<CustomResponseModel<ArticleUpdateViewModel>> UpdateOneArticleAsync(ArticleUpdateViewModel articleUpdateViewModel)
         {
-            throw new NotImplementedException();
+            var result = await _updateViewModelValidator.ValidateAsync(articleUpdateViewModel);
+            if (!result.IsValid)
+            {
+                ArticleUpdateViewModel newModel = _mapper.Map<ArticleUpdateViewModel>(await _repositoryManager.ArticleRepository
+                    .GetByFilter(false, x => x.Id.Equals(articleUpdateViewModel.Id), x => x.Category, x => x.AppUser, x => x.Img).SingleOrDefaultAsync());
+                return CustomResponseModel<ArticleUpdateViewModel>.ValidationUpdateFail(ResponseType.ValidationError, newModel, result.ConvertToCustomValidationErrors());
+            }
+            Article currentArticle = await _repositoryManager.ArticleRepository.GetByFilter(true, x => x.Id.Equals(articleUpdateViewModel.Id), x => x.Img, x => x.AppUser, x => x.Category).SingleOrDefaultAsync();
+            if (currentArticle is null)
+                return CustomResponseModel<ArticleUpdateViewModel>.Fail(ResponseType.NotFound, $"Makale Id : {articleUpdateViewModel.Id} olan makale sistemde kayıtlı değildir.");
+            currentArticle.Title = articleUpdateViewModel.Title;
+            currentArticle.Content = articleUpdateViewModel.Content;
+            currentArticle.CategoryId = articleUpdateViewModel.CategoryId;
+            currentArticle.IsActive = articleUpdateViewModel.IsActive;
+            currentArticle.IsDeleted = articleUpdateViewModel.IsActive ? false : true;
+            currentArticle.ModifiedDate = DateTime.Now;
+            currentArticle.ModifiedBy = _claimsPrincipal.GetLoggedInUserEmail();
+            if(articleUpdateViewModel.Photo is not null)
+            {
+                CustomResponseModel<ImgUploadViewModel> imgUploadResult = await _imgHelper.UploadOneImageAsync(articleUpdateViewModel.Photo);
+                if (imgUploadResult.ResponseType == ResponseType.Success)
+                {
+                    Img? newImg = new Img()
+                    {
+
+                        CreatedDate = DateTime.Now,
+                        FileName = imgUploadResult.Data.FullName,
+                        IsActive = true,
+                        IsDeleted = false,
+                        ModifiedDate = DateTime.Now,
+                        CreatedBy = _claimsPrincipal.GetLoggedInUserName(),
+
+                    };
+                    await _repositoryManager.ImgRepository.CreateAsync(newImg);
+                    await _uow.CommitAsync();
+                    currentArticle.ImgId = newImg.Id;
+                }
+            }
+            await _uow.CommitAsync();
+            return CustomResponseModel<ArticleUpdateViewModel>.Success(ResponseType.Success, _mapper.Map<ArticleUpdateViewModel>(currentArticle), $"Makale Id : {articleUpdateViewModel.Id} olan makale başarıyla güncellendi.");
         }
     }
 }
