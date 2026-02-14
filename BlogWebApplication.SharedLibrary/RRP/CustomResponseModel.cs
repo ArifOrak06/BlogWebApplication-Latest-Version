@@ -89,7 +89,7 @@ namespace BlogWebApplication.SharedLibrary.RRP
 
         }
 
-        public static CustomResponseModel<T> IdentitiyFail(ResponseType responseType, CustomIdentityError identityError)
+        public static CustomResponseModel<T> IdentityFail(ResponseType responseType, CustomIdentityError identityError)
         {
             return new CustomResponseModel<T>()
             {
@@ -98,7 +98,7 @@ namespace BlogWebApplication.SharedLibrary.RRP
             };
         }
 
-        public static CustomResponseModel<T> IdentitiyFail(ResponseType responseType, List<CustomIdentityError> identityErrors)
+        public static CustomResponseModel<T> IdentityFail(ResponseType responseType, List<CustomIdentityError> identityErrors)
         {
             return new CustomResponseModel<T>()
             {

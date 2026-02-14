@@ -24,4 +24,10 @@
     <Folder Include="wwwroot\pictures\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Management\.github\workflows\handle-new-issue-comment.yml" />
+    <None Include="wwwroot\Management\.github\workflows\handle-new-issue.yml" />
+    <None Include="wwwroot\Management\.github\workflows\issue-staler.yml" />
+  </ItemGroup>
+
 </Project>
