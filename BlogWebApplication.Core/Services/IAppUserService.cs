@@ -11,5 +11,6 @@ namespace BlogWebApplication.Core.Services
         Task<CustomResponseModel<AppUserEditViewModel>> UpdateOneAppUserAsync(AppUserEditViewModel appUserEditViewModel);
         Task<CustomResponseModel<NoContentModel>> DeleteOneAppUserAsync(Guid appUserId);
         Task<CustomResponseModel<NoContentModel>> PasswordChangeToAppUserAsync(AppUserPasswordChangeViewModel appUserPasswordChangeViwModel);
+   
     }
 }
