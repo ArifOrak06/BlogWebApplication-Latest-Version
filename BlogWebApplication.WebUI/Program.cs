@@ -1,8 +1,7 @@
-using BlogWebApplication.Core.Entities.Concrete;
-using BlogWebApplication.Repository.Contexts.EfCore;
 using BlogWebApplication.Repository.Extensions.Microsoft;
 using BlogWebApplication.Service.Extensions.Microsoft;
 using BlogWebApplication.Service.ValidationRules.ValidationRulesForArticleModels;
+using BlogWebApplication.WebUI.Extensions;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -17,7 +16,9 @@ builder.Services.AddControllersWithViews().AddFluentValidation(x =>
 
 builder.Services.AddDependenciesForRepositoryLayer(builder.Configuration);
 builder.Services.AddDependenciesForServiceLayer();
-builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddIdentityServices();
+builder.Services.AddCookieConfiguration();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 //builder.Services.AddAutoMapper(typeof(ArticleProfile).Assembly);
 

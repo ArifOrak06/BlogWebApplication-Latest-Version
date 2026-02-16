@@ -7,6 +7,7 @@ namespace BlogWebApplication.Core.Services
     {
         Task<CustomResponseModel<List<AppUserViewModel>>> GetAllAppUsersWithArticlesAndImgAsync();
         Task<CustomResponseModel<AppUserViewModel>> GetAppUserWithArticlesAndImgByUserIdAsync(Guid appUserId);
+        Task<CustomResponseModel<AppUserViewModel>> GetAppUserWithArticlesAndImgByUserNameAsync(string userName);
         Task<CustomResponseModel<AppUserSignUpViewModel>> CreateOneAppUserAsync(AppUserSignUpViewModel appUserSignUpViewModel);
         Task<CustomResponseModel<AppUserEditViewModel>> UpdateOneAppUserAsync(AppUserEditViewModel appUserEditViewModel);
         Task<CustomResponseModel<NoContentModel>> DeleteOneAppUserAsync(Guid appUserId);

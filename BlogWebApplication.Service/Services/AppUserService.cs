@@ -91,6 +91,15 @@ namespace BlogWebApplication.Service.Services
 
         }
 
+        public async Task<CustomResponseModel<AppUserViewModel>> GetAppUserWithArticlesAndImgByUserNameAsync(string userName)
+        {
+            //AppUser? currentUser = await _userManager.FindByNameAsync(userName);
+            AppUser? currentUser = await _repositoryManager.AppUserRepository.GetAppUserWithArticlesAndImgAsync(false, x => x.UserName.Equals(userName), x => x.Articles, x => x.Img);
+            if (currentUser is null)
+                return CustomResponseModel<AppUserViewModel>.Fail(ResponseType.NotFound, $"Kullanıcı adı : {userName} olan üye sistemde bulunamamıştır.");
+            return CustomResponseModel<AppUserViewModel>.Success(ResponseType.Success, _mapper.Map<AppUserViewModel>(currentUser), $"Kullanıcı adı :  {userName} olan kullanıcı başarılı bir şekilde listelenmiştir.");
+        }
+
         public async Task<CustomResponseModel<NoContentModel>> PasswordChangeToAppUserAsync(AppUserPasswordChangeViewModel appUserPasswordChangeViwModel)
         {
             var validationResult = await _appUserPasswordChangeValidator.ValidateAsync(appUserPasswordChangeViwModel);

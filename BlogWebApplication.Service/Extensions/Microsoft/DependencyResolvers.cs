@@ -15,6 +15,7 @@ namespace BlogWebApplication.Service.Extensions.Microsoft
             services.AddAutoMapper(typeof(ArticleProfile));
             services.AddScoped<IArticleService,ArticleService>();
             services.AddScoped<IAppUserService,AppUserService>();
+            services.AddScoped<ICategoryService,CategoryService>();
             services.AddScoped<IImgHelper, ImgHelper>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

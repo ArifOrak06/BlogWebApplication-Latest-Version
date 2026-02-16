@@ -63,6 +63,7 @@ namespace BlogWebApplication.Service.Services
 
                         CreatedDate = DateTime.Now,
                         FileName = imgUploadResult.Data!.FullName!,
+                        FileType = ".png",
                         IsActive = true,
                         IsDeleted = false,
                         ModifiedDate = DateTime.Now,
