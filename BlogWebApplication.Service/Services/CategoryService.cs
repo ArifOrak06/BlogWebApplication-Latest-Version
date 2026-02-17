@@ -103,7 +103,7 @@ namespace BlogWebApplication.Service.Services
 
         public async Task<CustomResponseModel<NoContentModel>> SoftDeleteOneCategoryAsync(Guid categoryId)
         {
-            Category? currentCategory = await _repositoryManager.CategoryRepository.GetByFilter(true, x => x.Id.Equals(categoryId) && x.IsDeleted).SingleOrDefaultAsync();
+            Category? currentCategory = await _repositoryManager.CategoryRepository.GetByFilter(true, x => x.Id.Equals(categoryId)).SingleOrDefaultAsync();
             if (currentCategory is null)
                 return CustomResponseModel<NoContentModel>.Fail(ResponseType.NotFound, "Silinmiş kategori bulunamadı.");
             currentCategory.IsDeleted = true;

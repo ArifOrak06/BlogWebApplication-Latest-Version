@@ -187,6 +187,7 @@ namespace BlogWebApplication.Service.Services
 
                         CreatedDate = DateTime.Now,
                         FileName = imgUploadResult.Data.FullName,
+                        FileType = articleUpdateViewModel.Photo.ContentType,
                         IsActive = true,
                         IsDeleted = false,
                         ModifiedDate = DateTime.Now,
