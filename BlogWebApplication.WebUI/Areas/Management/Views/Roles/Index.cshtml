@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Role Yönetimi";
+}
+@model List<AppRoleViewModel>
+
+<div class="container">
+
+    <h1 class="mt-4"> Role Yönetimi</h1>
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["StatusMessage"]
+        </div>
+    }
+
+    <a href="@Url.Action("AddRole", "Roles", new { area = "Management" })" class="btn btn-primary mb-3">Yeni Role Ekle</a>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Role Id</th>
+                <th>Role Adı</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appRole in Model)
+            {
+                <tr>
+                    <td>@appRole.Id</td>
+                    <td>@appRole.Name</td>
+     
+                    <td>
+                        <a asp-area="Management" asp-controller="Roles" asp-action="EditRole" asp-route-appRoleId="@appRole.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                        <a asp-area="Management" asp-controller="Roles" asp-action="DeleteRole" asp-route-appRoleId="@appRole.Id" class="btn btn-sm btn-danger">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

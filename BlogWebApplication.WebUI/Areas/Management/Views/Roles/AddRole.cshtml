@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Role Ekleme";
+}
+@model AppRoleCreateViewModel
+
+<div class="card mb-4">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a class="link" href="/Management/Categories">Role Yönetimi</a> /</span> Role Oluşturma</h4>
+    <h5 class="card-header">Role Oluşturma Formu</h5>
+    <hr />
+    <form asp-area="Management" asp-controller="Roles" asp-action="AddRole" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="defaultFormControlInput" class="form-label">Role Adı</label>
+                <input asp-for="Name" type="text"
+                       class="form-control"
+                       placeholder="Role adını giriniz..."
+                       aria-describedby="defaultFormControlHelp" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div>
+            <button class="btn btn-sm btn-success" type="submit">Oluştur</button>
+        </div>
+    </form>
+</div>
