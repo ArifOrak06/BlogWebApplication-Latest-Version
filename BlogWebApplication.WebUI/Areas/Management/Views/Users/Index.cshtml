@@ -34,6 +34,7 @@
                     <td>@appUser.Email</td>                
                     @* <td><user-role-name user-id="@appUser.Id"></user-role-name> *@
                     <td>
+                        <a asp-area="Management" asp-controller="Roles" asp-action="AssignRoleToAppUser" asp-route-userId="@appUser.Id" class="btn btn-sm btn-primary">Role Ata</a>
                         <a asp-area="Management" asp-controller="Users" asp-action="EditUser" asp-route-appUserId="@appUser.Id" class="btn btn-sm btn-warning">Düzenle</a>
                         <a asp-area="Management" asp-controller="Users" asp-action="DeleteUser" asp-route-appUserId="@appUser.Id" class="btn btn-sm btn-danger">Sil</a>
                     </td>
