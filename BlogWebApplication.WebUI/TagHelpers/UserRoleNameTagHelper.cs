@@ -1,9 +1,7 @@
 ﻿using BlogWebApplication.Core.Entities.Concrete;
 using BlogWebApplication.Core.Services;
-using BlogWebApplication.SharedLibrary.RRP;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Primitives;
 using System.Text;
 
 namespace BlogWebApplication.WebUI.TagHelpers
@@ -21,7 +19,7 @@ namespace BlogWebApplication.WebUI.TagHelpers
         }
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            AppUser? currentUser = await _userManager.FindByIdAsync(UserId);
+            AppUser currentUser = (await _userManager.FindByIdAsync(UserId))!;
 
             var userRoles = await _userManager.GetRolesAsync(currentUser);
 

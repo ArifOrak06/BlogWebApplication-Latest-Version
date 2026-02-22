@@ -110,7 +110,7 @@ namespace BlogWebApplication.Service.Services
             //Old Password Check
             var checkPassword = await _userManager.CheckPasswordAsync(currentAppUser, appUserPasswordChangeViwModel.CurrentPassword);
             if (!checkPassword)
-                return CustomResponseModel<NoContentModel>.Fail(ResponseType.NotFound, $"Eski şifre olarak girilen şifre ile sistemde kayıtlı şifreler uyuşmamaktadır.");
+                return CustomResponseModel<NoContentModel>.Fail(ResponseType.Error, $"Eski şifre olarak girilen şifre ile sistemde kayıtlı şifreler uyuşmamaktadır.");
             var identityResult = await _userManager.ChangePasswordAsync(currentAppUser,appUserPasswordChangeViwModel.CurrentPassword,appUserPasswordChangeViwModel.NewPassword);
             if (!identityResult.Succeeded)
                 return CustomResponseModel<NoContentModel>.IdentityFail(ResponseType.IdentityError, identityResult.ConvertToCustomIdentityError());

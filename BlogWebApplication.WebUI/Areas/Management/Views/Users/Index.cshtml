@@ -4,7 +4,7 @@
 @model List<AppUserViewModel>
 
 <div class="container">
-   
+
     @if (TempData["StatusMessage"] != null)
     {
         <div class="alert alert-success" role="alert">
@@ -16,11 +16,11 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Id</th>
+               
                 <th>Kullanıcı Adı</th>
                 <th>GSM</th>
-                <th>Email</th>         
-                @* <th>Rolü</th> *@
+                <th>Email</th>
+                <th>Rolü</th>
                 <th>İşlemler</th>
             </tr>
         </thead>
@@ -28,11 +28,11 @@
             @foreach (var appUser in Model)
             {
                 <tr>
-                    <td>@appUser.Id</td>
+                 
                     <td>@appUser.UserName</td>
                     <td>@appUser.PhoneNumber</td>
-                    <td>@appUser.Email</td>                
-                    @* <td><user-role-name user-id="@appUser.Id"></user-role-name> *@
+                    <td>@appUser.Email</td>
+                    <td><user-role-name user-id="@appUser.Id"></user-role-name>
                     <td>
                         <a asp-area="Management" asp-controller="Roles" asp-action="AssignRoleToAppUser" asp-route-userId="@appUser.Id" class="btn btn-sm btn-primary">Role Ata</a>
                         <a asp-area="Management" asp-controller="Users" asp-action="EditUser" asp-route-appUserId="@appUser.Id" class="btn btn-sm btn-warning">Düzenle</a>

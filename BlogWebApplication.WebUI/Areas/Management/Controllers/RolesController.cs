@@ -99,9 +99,9 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction("Index", "Users", new {Area="Management"});
         }
         [HttpGet]
-        public async Task<IActionResult> EditRole(Guid roleId)
+        public async Task<IActionResult> EditRole(Guid appRoleId)
         {
-            AppRoleUpdateViewModel roleUpdateModel = _mapper.Map<AppRoleUpdateViewModel>(await _roleManager.Roles.Where(x => x.Id.Equals(roleId)).SingleOrDefaultAsync());
+            AppRoleUpdateViewModel roleUpdateModel = _mapper.Map<AppRoleUpdateViewModel>(await _roleManager.Roles.Where(x => x.Id.Equals(appRoleId)).SingleOrDefaultAsync());
             if (roleUpdateModel == null)
                 return NotFound();
             return View(roleUpdateModel);
@@ -125,12 +125,12 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
 
 
         }
-        public async Task<IActionResult> DeleteRole(Guid roleId)
+        public async Task<IActionResult> DeleteRole(Guid appRoleId)
         {
-            AppRole role = (await _roleManager.FindByIdAsync(roleId.ToString()))!;
+            AppRole role = (await _roleManager.FindByIdAsync(appRoleId.ToString()))!;
             if (role == null) return NotFound();
             await _roleManager.DeleteAsync(role);
-            TempData["StatusMessage"] = $"Role ID  : {roleId} olan role silme işlemi başarıyla gerçekleştirilmiştir.";
+            TempData["StatusMessage"] = $"Role adı  : {role.Name} olan role silme işlemi başarıyla gerçekleştirilmiştir.";
             return RedirectToAction(nameof(Index));
         }
 
