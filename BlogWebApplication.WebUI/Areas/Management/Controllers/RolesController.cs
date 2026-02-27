@@ -25,17 +25,18 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _appUserService = appUserService;
             _userManager = userManager;
         }
-
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> Index()
         {
             var roleViewModels = _mapper.Map<List<AppRoleViewModel>>(await _roleManager.Roles.ToListAsync());
             return View(roleViewModels);
         }
-
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public IActionResult AddRole()
         {
             return View(); 
         }
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         [HttpPost]
         public async Task<IActionResult> AddRole(AppRoleCreateViewModel request)
         {
@@ -50,6 +51,8 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+
+        [Authorize(Roles = "SUPER ADMİN")]
         public async Task<IActionResult> AssignRoleToAppUser(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -80,6 +83,8 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
 
             return View(assignRoleList);
         }
+
+        [Authorize(Roles = "SUPER ADMİN")]
         [HttpPost]
         public async Task<IActionResult> AssignRoleToAppUser(Guid userId, List<AssignRoleToAppUserViewModel> matchedRoleList)
         {
@@ -98,7 +103,9 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = $"{user.UserName} isimli kullanıcıya role atama işlemi başarıyla gerçekleştirilmiştir.";
             return RedirectToAction("Index", "Users", new {Area="Management"});
         }
+
         [HttpGet]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditRole(Guid appRoleId)
         {
             AppRoleUpdateViewModel roleUpdateModel = _mapper.Map<AppRoleUpdateViewModel>(await _roleManager.Roles.Where(x => x.Id.Equals(appRoleId)).SingleOrDefaultAsync());
@@ -108,6 +115,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
 
         }
         [HttpPost]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditRole(AppRoleUpdateViewModel request)
         {
             if (!ModelState.IsValid)
@@ -125,6 +133,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
 
 
         }
+        [Authorize(Roles = "SUPER ADMİN")]
         public async Task<IActionResult> DeleteRole(Guid appRoleId)
         {
             AppRole role = (await _roleManager.FindByIdAsync(appRoleId.ToString()))!;

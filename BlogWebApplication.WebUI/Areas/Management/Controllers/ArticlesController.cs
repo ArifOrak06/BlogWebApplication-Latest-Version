@@ -24,7 +24,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-
+        [Authorize(Roles ="SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> Index()
         {
             CustomResponseModel<List<ArticleViewModel>>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync();
@@ -37,7 +37,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(result.Data);
 
         }
-
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> AddArticle()
         {
             List<CategoryViewModel>? categorieModels = (await _categoryService.GetAllActiveCategoriesWithArticlesAsync()).Data;
@@ -47,6 +47,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             });
         }
         [HttpPost]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> AddArticle(ArticleCreateViewModel request)
         {
             CustomResponseModel<ArticleCreateViewModel>? result = await _articleService.CreateOneArticleAsync(request);
@@ -64,6 +65,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction(nameof(HomeController.Index));
         }
         [HttpGet]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditArticle(Guid articleId)
         {
             CustomResponseModel<ArticleViewModel> result = await _articleService.GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(articleId);
@@ -77,6 +79,8 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             model.Categories = (await _categoryService.GetAllActiveCategoriesWithArticlesAsync()).Data;
             return View(model);
         }
+        [HttpPost]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditArticle(ArticleUpdateViewModel request)
         {
             if (!ModelState.IsValid)
@@ -97,6 +101,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+        [Authorize(Roles = "SUPER ADMİN")]
         [HttpGet]
         public async Task<IActionResult> SoftDeleteArticle(Guid articleId)
         {

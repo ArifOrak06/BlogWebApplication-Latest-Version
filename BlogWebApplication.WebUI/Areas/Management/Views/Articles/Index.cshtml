@@ -37,7 +37,13 @@
                     </td>
                     <td>
                         <a asp-area="Management" asp-controller="Articles" asp-action="EditArticle" asp-route-articleId="@article.Id" class="btn btn-sm btn-warning">Düzenle</a>
-                        <a asp-area="Management" asp-controller="Articles" asp-action="SoftDeleteArticle" asp-route-articleId="@article.Id" class="btn btn-sm btn-danger">Sil</a>
+                        @{
+                            if(User.IsInRole("SUPER ADMİN"))
+                            {
+                                <a asp-area="Management" asp-controller="Articles" asp-action="SoftDeleteArticle" asp-route-articleId="@article.Id" class="btn btn-sm btn-danger">Sil</a>
+                            }
+                        }
+                   
                     </td>
                 </tr>
             }

@@ -6,6 +6,7 @@ namespace BlogWebApplication.Core.Helpers
 {
     public interface IImgHelper
     {
-        Task<CustomResponseModel<ImgUploadViewModel>> UploadOneImageAsync(IFormFile photo);
+        Task<CustomResponseModel<ImgUploadViewModel>> UploadOneImageAsync(IFormFile photo, string fileName = null);
+        Task DeleteAsync(string imageName);
     }
 }

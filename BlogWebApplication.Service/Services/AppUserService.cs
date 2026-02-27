@@ -54,6 +54,27 @@ namespace BlogWebApplication.Service.Services
                 return CustomResponseModel<AppUserSignUpViewModel>.ValidationFail(ResponseType.ValidationError, validationResult.ConvertToCustomValidationErrors());
             AppUser? newUser = _mapper.Map<AppUser>(appUserSignUpViewModel);
             newUser.Email = appUserSignUpViewModel.Email;
+            if(appUserSignUpViewModel.Photo is not null)
+            {
+                var imgResult = await _imgHelper.UploadOneImageAsync(appUserSignUpViewModel.Photo, appUserSignUpViewModel.Email);
+                Img newImg = new()
+                {
+                    FileName = imgResult.Data!.FullName!,
+                    FileType = imgResult.Data.FileType!,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    CreatedBy = _claimPrincipal.GetLoggedInUserEmail(),
+                    ModifiedBy = _claimPrincipal.GetLoggedInUserEmail(),
+                    IsActive = true,
+                    IsDeleted = false,
+
+                };
+                await _repositoryManager.ImgRepository.CreateAsync(newImg);
+                await _uow.CommitAsync();
+                if (imgResult.ResponseType == ResponseType.Success)
+                    newUser.ImgId = newImg.Id;
+            }
+
             IdentityResult? identityResult = await _userManager.CreateAsync(newUser, appUserSignUpViewModel.Password);
             if (!identityResult.Succeeded)
                 return CustomResponseModel<AppUserSignUpViewModel>.IdentityFail(ResponseType.IdentityError, identityResult.ConvertToCustomIdentityError());
@@ -145,7 +166,7 @@ namespace BlogWebApplication.Service.Services
                 var newImg = new Img
                 {
                     FileName = imgResult.Data!.FullName!,
-                    FileType = "jpg",
+                    FileType = imgResult.Data!.FileType!,
                     CreatedBy = _claimPrincipal.GetLoggedInUserEmail(),
                     IsActive = true,
                     IsDeleted = false,

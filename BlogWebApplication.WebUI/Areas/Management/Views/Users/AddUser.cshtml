@@ -47,7 +47,14 @@
                 <input asp-for="ConfirmPassword" type="password" class="form-control">
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-
+            <div class="mb-3">
+                <label asp-for="Photo" for="defaultFormControlInput" class="form-label">Resim Seç</label>
+                <input asp-for="Photo" type="file"
+                       class="form-control"
+                       placeholder="Yüklenecek Resim Seçiniz."
+                       aria-describedby="defaultFormControlHelp" accept="image/*" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
             <div class="row mb-3">
                 <div class="col-md-8 offset-md-4">
 

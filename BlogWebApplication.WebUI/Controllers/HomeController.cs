@@ -86,7 +86,7 @@ namespace BlogWebApplication.WebUI.Controllers
         }
 
 
-        public IActionResult Privacy()
+        public IActionResult AccessDenied()
         {
             return View();
         }

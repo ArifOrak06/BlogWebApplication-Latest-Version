@@ -21,7 +21,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-
+        [Authorize(Roles ="SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> Index()
         {
             CustomResponseModel<List<CategoryViewModel>>? result = await _categoryService.GetAllActiveCategoriesWithArticlesAsync();
@@ -29,11 +29,13 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
                 return NotFound();  
             return View(result.Data);
         }
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public IActionResult AddCategory()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> AddCategory(CategoryCreateViewModel request)
         {
             CustomResponseModel<CategoryCreateViewModel>? result = await _categoryService.CreateOneCategoryAsync(request);
@@ -45,6 +47,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = result.isSuccessMessage;    
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditCategory(Guid categoryId)
         {
             CustomResponseModel<CategoryViewModel>? result = await _categoryService.GetOneCategoryWithArticlesByCategoryIdAsync(categoryId);
@@ -53,6 +56,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(_mapper.Map<CategoryUpdateViewModel>(result.Data));
         }
         [HttpPost]
+        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
         public async Task<IActionResult> EditCategory(CategoryUpdateViewModel request)
         {
             CustomResponseModel<CategoryUpdateViewModel>? result = await _categoryService.UpdateOneCategoryAsync(request);
@@ -66,6 +70,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = result.isSuccessMessage;    
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "SUPER ADMİN")]
         public async Task<IActionResult> SoftDeleteCategory(Guid categoryId)
         {
             CustomResponseModel<NoContentModel> result = await _categoryService.SoftDeleteOneCategoryAsync(categoryId);

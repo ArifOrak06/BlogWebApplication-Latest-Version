@@ -11,5 +11,9 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
         {
             return View();
         }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

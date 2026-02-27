@@ -1,5 +1,6 @@
 ﻿using BlogWebApplication.Core.Entities.Concrete;
 using BlogWebApplication.Repository.Contexts.EfCore;
+using BlogWebApplication.WebUI.Localizations;
 
 namespace BlogWebApplication.WebUI.Extensions
 {
@@ -19,19 +20,28 @@ namespace BlogWebApplication.WebUI.Extensions
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 opt.Lockout.MaxFailedAccessAttempts = 3;
 
-            }).AddEntityFrameworkStores<AppDbContext>();
+            }).AddErrorDescriber<LocalizationIdentityErrorsDescriber>().AddEntityFrameworkStores<AppDbContext>();
         }
         public static void AddCookieConfiguration(this IServiceCollection services)
         {
             services.ConfigureApplicationCookie(opt =>
             {
-                var cookieBuilder = new CookieBuilder();
-                cookieBuilder.Name = "BlogWebApplicationCookie";
+                var cookieBuilder = new CookieBuilder()
+                {
+                    Name = "BlogWebApplicationCookie",
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest // http, https den istek alınabilir. Yayımlanırken Always olarak ayarlanması gerekmektedir.
+
+                };
+               
                 opt.LoginPath = new PathString("/Home/SignIn");
                 opt.LogoutPath = new PathString("/Members/Logout");
+                opt.AccessDeniedPath = new PathString("/Management/Home/AccessDenied"); // yetkisiz erişimde yönlendirilecek sayfa
                 opt.Cookie = cookieBuilder;
                 opt.ExpireTimeSpan = TimeSpan.FromDays(7);
                 opt.SlidingExpiration = true;
+                
             });
         }
     }

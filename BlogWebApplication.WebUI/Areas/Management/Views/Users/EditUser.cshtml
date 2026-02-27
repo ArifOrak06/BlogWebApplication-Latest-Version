@@ -8,11 +8,11 @@
 
         <h3>Kullanıcı Bilgileri Güncelleme Formu</h3>
         <hr />
-
+@* 
         @if (TempData["StatusMessage"] != null)
         {
             <div class="alert alert-success" role="alert"> @TempData["StatusMessage"]</div>
-        }
+        } *@
 
         <div class="alert alert-danger" asp-validation-summary="ModelOnly" role="alert"></div>
         <form asp-controller="Users" asp-action="EditUser" method="post" enctype="multipart/form-data">
@@ -52,13 +52,7 @@
                 </div>
 
             </div>
-            <div class="mb-3">
-                <label asp-for="Photo" class="col-md-4 col-form-label"></label>
-                <div class="col-md-8">
-                    <input type="file" class="form-control" asp-for="Photo">
-                    <span asp-validation-for="Photo" class="text-danger"></span>
-                </div>
-            </div>
+         
             <div class="row mb-3">
                 <div class="col-md-8 offset-md-4">
 

@@ -42,12 +42,12 @@ namespace BlogWebApplication.WebUI.Controllers
         public async Task<IActionResult> PasswordChange(AppUserPasswordChangeViewModel request)
         {
             CustomResponseModel<NoContentModel> result = await _appUserService.PasswordChangeToAppUserAsync(request);
-            if(result.ResponseType == ResponseType.ValidationError)
+            if (result.ResponseType == ResponseType.ValidationError)
             {
                 ModelState.AddModelStateValidationErrorList(result.ValidationErrors!);
                 return View();
             }
-            if(result.ResponseType == ResponseType.IdentityError)
+            if (result.ResponseType == ResponseType.IdentityError)
             {
                 ModelState.AddModelStateIdentityErrorList(result.IdentityErrors!);
                 return View();
@@ -61,6 +61,6 @@ namespace BlogWebApplication.WebUI.Controllers
             return RedirectToAction(nameof(PasswordChange));
 
         }
-
+ 
     }
 }
