@@ -4,6 +4,7 @@ using BlogWebApplication.Core.Models.CategoryModels;
 using BlogWebApplication.Core.Services;
 using BlogWebApplication.SharedLibrary.Enums;
 using BlogWebApplication.SharedLibrary.RRP;
+using BlogWebApplication.WebUI.Consts;
 using BlogWebApplication.WebUI.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-        [Authorize(Roles ="SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> Index()
         {
             CustomResponseModel<List<ArticleViewModel>>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync();
@@ -37,7 +38,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(result.Data);
 
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> AddArticle()
         {
             List<CategoryViewModel>? categorieModels = (await _categoryService.GetAllActiveCategoriesWithArticlesAsync()).Data;
@@ -47,7 +48,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             });
         }
         [HttpPost]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> AddArticle(ArticleCreateViewModel request)
         {
             CustomResponseModel<ArticleCreateViewModel>? result = await _articleService.CreateOneArticleAsync(request);
@@ -65,7 +66,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction(nameof(HomeController.Index));
         }
         [HttpGet]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditArticle(Guid articleId)
         {
             CustomResponseModel<ArticleViewModel> result = await _articleService.GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(articleId);
@@ -80,7 +81,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(model);
         }
         [HttpPost]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditArticle(ArticleUpdateViewModel request)
         {
             if (!ModelState.IsValid)
@@ -101,7 +102,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        [Authorize(Roles = "SUPER ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
         [HttpGet]
         public async Task<IActionResult> SoftDeleteArticle(Guid articleId)
         {

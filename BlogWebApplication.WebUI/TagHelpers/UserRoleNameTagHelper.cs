@@ -27,7 +27,7 @@ namespace BlogWebApplication.WebUI.TagHelpers
 
             userRoles.ToList().ForEach(role =>
             {
-                stringBuilder.Append(@$"<span class='badge bg-secondary ml-1'>{role.ToLower()}</span>");
+                stringBuilder.Append(@$"<span class='badge bg-warning ml-1'>{role.ToLower()}</span>");
             });
 
             output.Content.SetHtmlContent(stringBuilder.ToString());

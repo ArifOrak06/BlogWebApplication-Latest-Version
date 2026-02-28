@@ -3,6 +3,7 @@ using BlogWebApplication.Core.Models.CategoryModels;
 using BlogWebApplication.Core.Services;
 using BlogWebApplication.SharedLibrary.Enums;
 using BlogWebApplication.SharedLibrary.RRP;
+using BlogWebApplication.WebUI.Consts;
 using BlogWebApplication.WebUI.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
-        [Authorize(Roles ="SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> Index()
         {
             CustomResponseModel<List<CategoryViewModel>>? result = await _categoryService.GetAllActiveCategoriesWithArticlesAsync();
@@ -29,13 +30,13 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
                 return NotFound();  
             return View(result.Data);
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public IActionResult AddCategory()
         {
             return View();
         }
         [HttpPost]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> AddCategory(CategoryCreateViewModel request)
         {
             CustomResponseModel<CategoryCreateViewModel>? result = await _categoryService.CreateOneCategoryAsync(request);
@@ -47,7 +48,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = result.isSuccessMessage;    
             return RedirectToAction(nameof(Index));
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditCategory(Guid categoryId)
         {
             CustomResponseModel<CategoryViewModel>? result = await _categoryService.GetOneCategoryWithArticlesByCategoryIdAsync(categoryId);
@@ -56,7 +57,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(_mapper.Map<CategoryUpdateViewModel>(result.Data));
         }
         [HttpPost]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditCategory(CategoryUpdateViewModel request)
         {
             CustomResponseModel<CategoryUpdateViewModel>? result = await _categoryService.UpdateOneCategoryAsync(request);
@@ -70,7 +71,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = result.isSuccessMessage;    
             return RedirectToAction(nameof(Index));
         }
-        [Authorize(Roles = "SUPER ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
         public async Task<IActionResult> SoftDeleteCategory(Guid categoryId)
         {
             CustomResponseModel<NoContentModel> result = await _categoryService.SoftDeleteOneCategoryAsync(categoryId);

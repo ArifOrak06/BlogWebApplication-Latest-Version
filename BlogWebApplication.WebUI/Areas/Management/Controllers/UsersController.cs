@@ -4,6 +4,7 @@ using BlogWebApplication.Core.Models.AppUserModels;
 using BlogWebApplication.Core.Services;
 using BlogWebApplication.SharedLibrary.Enums;
 using BlogWebApplication.SharedLibrary.RRP;
+using BlogWebApplication.WebUI.Consts;
 using BlogWebApplication.WebUI.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,7 +30,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _mapper = mapper;
             _signInManager = signInManager;
         }
-        [Authorize(Roles ="SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> Index()
         {
             CustomResponseModel<List<AppUserViewModel>> result = await _appUserService.GetAllAppUsersWithArticlesAndImgAsync();
@@ -38,12 +39,12 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
 
             return View(result.Data);
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public IActionResult AddUser()
         {
             return View(); 
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         [HttpPost]
         public async Task<IActionResult> AddUser(AppUserSignUpViewModel request)
         {
@@ -61,7 +62,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             TempData["StatusMessage"] = result.isSuccessMessage;
             return RedirectToAction(nameof(Index));
         }
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditUser(Guid appUserId)
         {
             CustomResponseModel<AppUserViewModel> result = await _appUserService.GetAppUserWithArticlesAndImgByUserIdAsync(appUserId);
@@ -70,7 +71,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             return View(_mapper.Map<AppUserEditViewModel>(result.Data));
         }
         [HttpPost]
-        [Authorize(Roles = "SUPER ADMİN, ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
         public async Task<IActionResult> EditUser(AppUserEditViewModel request)
         {
             CustomResponseModel<AppUserEditViewModel> result = await _appUserService.UpdateOneAppUserAsync(request);
@@ -93,7 +94,7 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
         // Role Güncelleme, Silme action methodları RolesController'da geliştirilecek, 
         // İlgili kullanıcıya Role Atama action methodu  RolesController'da geliştirilecek !!!!!
         [HttpGet]
-        [Authorize(Roles = "SUPER ADMİN")]
+        [Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
         public async Task<IActionResult> DeleteUser(Guid appUserId)
         {
             var result = await _appUserService.DeleteOneAppUserAsync(appUserId);

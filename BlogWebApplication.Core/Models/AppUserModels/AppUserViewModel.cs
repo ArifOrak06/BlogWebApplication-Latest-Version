@@ -9,6 +9,7 @@ namespace BlogWebApplication.Core.Models.AppUserModels
         public string UserName { get; set; }= null!;
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
+        public ICollection<String>? Roles { get; set; }
         public ICollection<ArticleViewModel>? Articles { get; set; }
         public Img? Img { get; set; }
         public Guid ImgId { get; set; }
