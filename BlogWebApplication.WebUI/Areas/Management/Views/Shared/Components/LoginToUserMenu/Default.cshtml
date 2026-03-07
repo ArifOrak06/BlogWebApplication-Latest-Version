@@ -16,8 +16,12 @@
                         </div>
                     </div>
                     <div class="flex-grow-1">
-                        <span class="fw-semibold d-block">John Doe</span>
-                        <small class="text-muted">@Model.Roles!.First()</small>
+                        <span class="fw-semibold d-block">@Model.UserName</span>
+                        <small class="text-muted">
+
+                            @(Model.Roles is null ? "Role Atanmadı" : Model.Roles.First())
+
+                        </small>
                     </div>
                 </div>
             </a>
@@ -28,13 +32,13 @@
         <li>
             <a class="dropdown-item" href="#">
                 <i class="bx bx-user me-2"></i>
-                <span class="align-middle">My Profile</span>
+                <span class="align-middle">Profil Bilgileri</span>
             </a>
         </li>
         <li>
             <a class="dropdown-item" href="#">
                 <i class="bx bx-cog me-2"></i>
-                <span class="align-middle">Settings</span>
+                <span class="align-middle">Ayarlar</span>
             </a>
         </li>
         <li>
@@ -50,9 +54,9 @@
             <div class="dropdown-divider"></div>
         </li>
         <li>
-            <a class="dropdown-item" href="auth-login-basic.html">
+            <a class="dropdown-item" asp-route-returnUrl="/Home/Index" asp-area="" asp-controller="Members" asp-action="LogOut">
                 <i class="bx bx-power-off me-2"></i>
-                <span class="align-middle">Log Out</span>
+                <span class="align-middle">Çıkış Yap</span>
             </a>
         </li>
     </ul>

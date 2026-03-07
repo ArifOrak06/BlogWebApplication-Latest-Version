@@ -17,7 +17,7 @@
         <div class="alert alert-danger" asp-validation-summary="ModelOnly" role="alert"></div>
         <form asp-controller="Users" asp-action="EditUser" method="post" enctype="multipart/form-data">
 
-
+            <input type="hidden" asp-for="Id" />
 
             <div class="mb-3">
                 <label asp-for="UserName" for="exampleInputPassword1" class="form-label"></label>

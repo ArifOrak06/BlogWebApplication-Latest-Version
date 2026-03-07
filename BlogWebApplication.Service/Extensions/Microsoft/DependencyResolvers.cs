@@ -17,6 +17,7 @@ namespace BlogWebApplication.Service.Extensions.Microsoft
             services.AddScoped<IAppUserService,AppUserService>();
             services.AddScoped<ICategoryService,CategoryService>();
             services.AddScoped<IImgHelper, ImgHelper>();
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }

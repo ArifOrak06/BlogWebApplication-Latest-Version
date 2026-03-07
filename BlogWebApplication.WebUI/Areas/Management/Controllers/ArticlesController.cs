@@ -55,13 +55,16 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             if (result.ResponseType == ResponseType.ValidationError)
             {
                 ModelState.AddModelStateValidationErrorList(result.ValidationErrors!);
-                return View();
+                request.Categories = (await _categoryService.GetAllActiveCategoriesWithArticlesAsync()).Data;
+                return View(request);
             }
+
             if (result.ResponseType == ResponseType.Error)
             {
                 ViewData["StatusMessage"] = result.Errors!.First();
-                return View();
+                return View(request);
             }
+
             TempData["StatusMessage"] = result.isSuccessMessage;
             return RedirectToAction(nameof(HomeController.Index));
         }

@@ -31,7 +31,13 @@ namespace BlogWebApplication.WebUI.Areas.Management.ViewComponents
                 ModelState.AddModelStateIdentityErrorList(result.IdentityErrors!);
                 return View();
             }
-            result.Data.Roles = await _userManager.GetRolesAsync(_mapper.Map<AppUser>(result.Data));
+            var userRoles = await _userManager.GetRolesAsync(_mapper.Map<AppUser>(result.Data));
+            if (userRoles.Any())
+            {
+                result.Data!.Roles = userRoles;
+                return View(result.Data);
+            }
+            result.Data!.Roles = new List<String>() { "Atanmadı" };
             return View(result.Data);
         }
     }

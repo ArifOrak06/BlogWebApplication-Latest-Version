@@ -85,8 +85,8 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
                 ModelState.AddModelStateValidationErrorList(result.ValidationErrors!);
                 return View();
             }
-            await _signInManager.SignOutAsync();
-            await _signInManager.SignInAsync(_mapper.Map<AppUser>(result.Data), true);
+
+        
             TempData["StatusMessage"] = "Üye bilgileri başarılı bir şekilde güncellenmiştir.";
             return View(result.Data);
         }
