@@ -1,5 +1,6 @@
 using BlogWebApplication.Core.Entities.Concrete;
 using BlogWebApplication.Core.Models.AppUserModels;
+using BlogWebApplication.Core.Models.ArticleModels;
 using BlogWebApplication.Core.Services;
 using BlogWebApplication.SharedLibrary.Enums;
 using BlogWebApplication.SharedLibrary.RRP;
@@ -17,17 +18,23 @@ namespace BlogWebApplication.WebUI.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IAppUserService _appUserService;
         private readonly SignInManager<AppUser> _signInManager;
-        public HomeController(ILogger<HomeController> logger, IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private readonly IArticleService _articleService;
+        public HomeController(ILogger<HomeController> logger, IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IArticleService articleService)
         {
             _logger = logger;
             _appUserService = appUserService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _articleService = articleService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool ascending = false)
         {
-            return View();
+            CustomResponseModel<ArticleListViewModel>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(categoryId,currentPage,pageSize,ascending);
+            if (result.ResponseType == ResponseType.NotFound)
+                return NotFound();
+
+            return View(result.Data);
         }
 
         public IActionResult SignIn()
@@ -40,15 +47,18 @@ namespace BlogWebApplication.WebUI.Controllers
             returnUrl = returnUrl ?? Url.Action("Index", "Home");
             AppUser? user = await _userManager.FindByEmailAsync(request.Email);
             if (user is null)
+            {
                 ModelState.AddModelError(string.Empty, "Email veya şifre hatalı");
+                return View();
+            }
             var singInResult = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
-            if (singInResult.Succeeded)
+            if (singInResult.Succeeded) 
                 return Redirect(returnUrl);
 
             
 
-            // Kullanıcının Hesabı kilitlenmişse;
-
+           // Kullanıcının Hesabı kilitlenmişse;
+              
             if (singInResult.IsLockedOut)
             {
                 ModelState.AddModelError(string.Empty, "Hesabınız bir süreliğine kilitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");

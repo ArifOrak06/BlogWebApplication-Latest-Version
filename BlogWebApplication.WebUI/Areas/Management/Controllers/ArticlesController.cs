@@ -26,10 +26,10 @@ namespace BlogWebApplication.WebUI.Areas.Management.Controllers
             _mapper = mapper;
         }
         [Authorize(Roles = $"{RoleConsts.SuperAdmin},{RoleConsts.Admin}")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Guid? categoryId, int currentPage=1,int pageSize=3,bool ascending=false)
         {
-            CustomResponseModel<List<ArticleViewModel>>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync();
-            if (result.ResponseType == ResponseType.Error)
+            CustomResponseModel<ArticleListViewModel>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(categoryId,currentPage,pageSize,ascending);
+            if (result.ResponseType == ResponseType.NotFound)
             {
                 ViewData["StatusMessage"] = result.Errors!.First();
                 return NotFound();

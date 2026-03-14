@@ -89,7 +89,29 @@ namespace BlogWebApplication.Service.Services
                 return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, "Sistemde kayıtlı aktif makale bulunmamaktadır.");
             return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
         }
+        public async Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false)
+        {
+            // CurrentPage, PageSize ve isAscending parametrelerini ArticleParameters adında bir class yapısı içerisinde toplayabiliriz.
 
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();
+
+            var filterArticles = articles.Skip((currentPage - 1) * pageSize) // Atlama
+             .Take(pageSize)// Alma
+             .OrderBy(x => x.CreatedDate); // Sıralama
+
+            if (filterArticles is null)
+                return CustomResponseModel<ArticleListViewModel>.Fail(ResponseType.NotFound, "Sistemde kayıtlı aktif makale bulunmamaktadır.");
+
+            return CustomResponseModel<ArticleListViewModel>.Success(ResponseType.Success, new ArticleListViewModel
+            {
+                Articles = _mapper.Map<List<ArticleViewModel>>(filterArticles),
+                CategoryId = categoryId == null ? null : categoryId,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                TotalCount = articles.Count(),
+                IsAscending = isAscending
+            }, "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
+        }
         public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithAppUserByCategoryIdAsync(Guid categoryId)
         {
             List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.CategoryId == categoryId&&x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();

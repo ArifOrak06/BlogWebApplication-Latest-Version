@@ -22,5 +22,6 @@ namespace BlogWebApplication.Core.Models.ArticleModels
         public string? CreatedBy { get; set; }
         public DateTime ModifiedDate { get; set; }
         public DateTime CreatedDate { get; set; }
+        public ArticleParameters ArticleParameters { get; set; }
     }
 }
