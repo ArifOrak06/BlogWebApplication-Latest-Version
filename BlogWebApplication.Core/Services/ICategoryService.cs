@@ -6,6 +6,7 @@ namespace BlogWebApplication.Core.Services
     public interface ICategoryService
     {
         Task<CustomResponseModel<List<CategoryViewModel>>> GetAllActiveCategoriesWithArticlesAsync();
+        Task<CustomResponseModel<CategoryListViewModel>> GetAllActiveCategoriesWithArticlesPaggingAsync(int currentPage = 1, int pageSize=3,bool ascending=false);
         Task<CustomResponseModel<List<CategoryViewModel>>> GetAllSoftDeletedCategoriesWithArticlesAsync();
         Task<CustomResponseModel<CategoryViewModel>> GetOneCategoryWithArticlesByCategoryIdAsync(Guid categoryId);
         Task<CustomResponseModel<CategoryCreateViewModel>> CreateOneCategoryAsync(CategoryCreateViewModel request);

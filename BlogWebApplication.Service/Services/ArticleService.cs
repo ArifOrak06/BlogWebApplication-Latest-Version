@@ -89,7 +89,7 @@ namespace BlogWebApplication.Service.Services
                 return CustomResponseModel<List<ArticleViewModel>>.Fail(ResponseType.NotFound, "Sistemde kayıtlı aktif makale bulunmamaktadır.");
             return CustomResponseModel<List<ArticleViewModel>>.Success(ResponseType.Success, _mapper.Map<List<ArticleViewModel>>(articles), "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
         }
-        public async Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false)
+        public async Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(Guid? categoryId, int currentPage, int pageSize, bool isAscending)
         {
             // CurrentPage, PageSize ve isAscending parametrelerini ArticleParameters adında bir class yapısı içerisinde toplayabiliriz.
 

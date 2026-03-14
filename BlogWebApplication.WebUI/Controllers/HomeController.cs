@@ -28,9 +28,9 @@ namespace BlogWebApplication.WebUI.Controllers
             _articleService = articleService;
         }
 
-        public async Task<IActionResult> Index(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool ascending = false)
+        public async Task<IActionResult> Index(Guid? categoryId,int currentPage=1, int pageSize=3, bool ascending=false)
         {
-            CustomResponseModel<ArticleListViewModel>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(categoryId,currentPage,pageSize,ascending);
+            CustomResponseModel<ArticleListViewModel>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(categoryId, currentPage, pageSize, ascending);
             if (result.ResponseType == ResponseType.NotFound)
                 return NotFound();
 

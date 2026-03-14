@@ -70,6 +70,25 @@ namespace BlogWebApplication.Service.Services
                 return CustomResponseModel<List<CategoryViewModel>>.Fail(ResponseType.NotFound, "Aktif kategori bulunamadı.");
             return CustomResponseModel<List<CategoryViewModel>>.Success(ResponseType.Success, _mapper.Map<List<CategoryViewModel>>(categories), "Aktif kategoriler başarıyla getirildi.");
         }
+        public async Task<CustomResponseModel<CategoryListViewModel>> GetAllActiveCategoriesWithArticlesPaggingAsync(int currentPage=1,int pageSize=3,bool ascending=false)
+        {
+            List<Category>? categories = await _repositoryManager.CategoryRepository.GetByFilter(false, x => x.IsActive && !x.IsDeleted, x => x.Articles).ToListAsync();
+            var filterCategories = categories.Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .OrderBy(x => x.CreatedDate);
+            if (categories is null || categories.Count == 0)
+                return CustomResponseModel<CategoryListViewModel>.Fail(ResponseType.NotFound, "Aktif kategori bulunamadı.");
+            return CustomResponseModel<CategoryListViewModel>.Success(ResponseType.Success, new CategoryListViewModel
+            {
+                Categories = _mapper.Map<List<CategoryViewModel>>(filterCategories),
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                TotalCount = categories.Count(),
+                IsAscending = ascending,
+                
+            }, "Aktif kategoriler başarıyla getirildi.");
+        }
+
 
         public async Task<CustomResponseModel<List<CategoryViewModel>>> GetAllSoftDeletedCategoriesWithArticlesAsync()
         {
