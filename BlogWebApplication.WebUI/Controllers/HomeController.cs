@@ -37,6 +37,13 @@ namespace BlogWebApplication.WebUI.Controllers
             return View(result.Data);
         }
 
+        public async Task<IActionResult> ArticleDetails(Guid articleId)
+        {
+            CustomResponseModel<ArticleViewModel> result = await _articleService.GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(articleId);
+            if (result.ResponseType == ResponseType.NotFound)
+                return NotFound();
+            return View(result.Data);
+        }
         public IActionResult SignIn()
         {
             return View();
