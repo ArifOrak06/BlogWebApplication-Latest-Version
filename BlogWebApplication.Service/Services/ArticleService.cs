@@ -112,6 +112,31 @@ namespace BlogWebApplication.Service.Services
                 IsAscending = isAscending
             }, "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
         }
+        public async Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserByAnotherKeywordPaggingAsync(string keyword, int currentPage, int pageSize, bool isAscending)
+        {
+            // CurrentPage, PageSize ve isAscending parametrelerini ArticleParameters adında bir class yapısı içerisinde toplayabiliriz.
+
+            List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false,
+                x => x.IsActive && !x.IsDeleted && (x.Title.Contains(keyword)|| x.Content.Contains(keyword) || x.Category.Name.Contains(keyword) ), 
+                x => x.AppUser, x => x.Category, x => x.Img)
+                .ToListAsync();
+
+            var filterArticles = articles.Skip((currentPage - 1) * pageSize) // Atlama
+             .Take(pageSize)// Alma
+             .OrderBy(x => x.CreatedDate); // Sıralama
+
+            if (filterArticles is null)
+                return CustomResponseModel<ArticleListViewModel>.Fail(ResponseType.NotFound, "Sistemde kayıtlı aktif makale bulunmamaktadır.");
+
+            return CustomResponseModel<ArticleListViewModel>.Success(ResponseType.Success, new ArticleListViewModel
+            {
+                Articles = _mapper.Map<List<ArticleViewModel>>(filterArticles),
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                TotalCount = articles.Count(),
+                IsAscending = isAscending
+            }, "Sistemde kayıtlı aktif makaleler başarılı bir şekilde listelenmiştir.");
+        }
         public async Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithAppUserByCategoryIdAsync(Guid categoryId)
         {
             List<Article>? articles = await _repositoryManager.ArticleRepository.GetByFilter(false, x => x.CategoryId == categoryId&&x.IsActive && !x.IsDeleted, x => x.AppUser, x => x.Category, x => x.Img).ToListAsync();

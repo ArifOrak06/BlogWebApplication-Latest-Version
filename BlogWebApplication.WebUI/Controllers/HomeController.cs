@@ -37,6 +37,15 @@ namespace BlogWebApplication.WebUI.Controllers
             return View(result.Data);
         }
 
+        public async Task<IActionResult> Search(string keyword, int currentPage = 1, int pageSize = 3, bool ascending = false)
+        {
+            CustomResponseModel<ArticleListViewModel>? result = await _articleService.GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserByAnotherKeywordPaggingAsync(keyword, currentPage, pageSize, ascending);
+            if (result.ResponseType == ResponseType.NotFound)
+                return NotFound();
+
+            return View(result.Data);
+        }
+
         public async Task<IActionResult> ArticleDetails(Guid articleId)
         {
             CustomResponseModel<ArticleViewModel> result = await _articleService.GetOneActiveArticleWithCategoryAndAppUserByArticleIdAsync(articleId);
@@ -44,10 +53,12 @@ namespace BlogWebApplication.WebUI.Controllers
                 return NotFound();
             return View(result.Data);
         }
+
         public IActionResult SignIn()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SignIn(AppUserSignInViewModel request, string? returnUrl)
         {
@@ -62,8 +73,6 @@ namespace BlogWebApplication.WebUI.Controllers
             if (singInResult.Succeeded) 
                 return Redirect(returnUrl);
 
-            
-
            // Kullanıcının Hesabı kilitlenmişse;
               
             if (singInResult.IsLockedOut)
@@ -75,12 +84,14 @@ namespace BlogWebApplication.WebUI.Controllers
             ModelState.AddModelError(string.Empty, $"Email veya şifre hatalı, başarısız giriş denemesi : {await _userManager.GetAccessFailedCountAsync(user)}");
 
             return View();
+
         }
 
         public IActionResult SignUp()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SignUp(AppUserSignUpViewModel request)
         {

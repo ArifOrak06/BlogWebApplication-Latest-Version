@@ -7,6 +7,7 @@ namespace BlogWebApplication.Core.Services
     {
         Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserAsync();
         Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserPaggingAsync(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false);
+        Task<CustomResponseModel<ArticleListViewModel>> GetAllActivesAndNonDeletedArticlesWithCategoryAndAppUserByAnotherKeywordPaggingAsync(string keyword, int currentPage, int pageSize, bool isAscending); // searcing by keyword in title, content, category name and app user name
         Task<CustomResponseModel<List<ArticleViewModel>>> GetAllDeletedArticlesWithCategoryAndAppUserAsync();
         Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithCategoryByAppUserIdAsync(Guid appUserId);
         Task<CustomResponseModel<List<ArticleViewModel>>> GetAllActivesArticlesWithAppUserByCategoryIdAsync(Guid categoryId);
@@ -16,6 +17,7 @@ namespace BlogWebApplication.Core.Services
         Task<CustomResponseModel<NoContentModel>> SoftDeleteOneArticleAsync(Guid articleId);
         Task<CustomResponseModel<NoContentModel>> RestoreOneArticleAsync(Guid articleId);
         Task<CustomResponseModel<NoContentModel>> HardDeleteOneArticleAsync(Guid articleId);
+
 
         
 
